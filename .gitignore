@@ -9,3 +9,8 @@ tb
 *.log
 *.vec
 *.mif
+*~
+*.bin
+*.map
+disasm.S
+*.elf

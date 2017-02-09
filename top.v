@@ -2,7 +2,7 @@
 
 module system (
 	input            clk,
-	input            resetn,
+	input            resetn_i,
 	output           trap,
 	output reg [7:0] out_byte,
 	output reg       out_byte_en,
@@ -22,7 +22,14 @@ module system (
 	wire [31:0] mem_la_addr;
 	wire [31:0] mem_la_wdata;
 	wire [3:0] mem_la_wstrb;
-
+	
+	reg resetn = 0;
+	
+	always @(posedge clk)
+	begin
+		resetn <= resetn_i;
+	end
+	
 	picorv32 picorv32_core (
 		.clk         (clk         ),
 		.resetn      (resetn      ),

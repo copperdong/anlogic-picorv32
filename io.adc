@@ -8,7 +8,7 @@ set_pin_assignment {out_byte[2]} { LOCATION = T5;  }
 set_pin_assignment {out_byte[1]} { LOCATION = T6;  }
 set_pin_assignment {out_byte[0]} { LOCATION = T7;  }
 set_pin_assignment {out_byte_en} { LOCATION = T3;  }
-set_pin_assignment {resetn} { LOCATION = K7; DRIVESTRENGTH = NA;  }
+set_pin_assignment {resetn_i} { LOCATION = K7; DRIVESTRENGTH = NA;  }
 set_pin_assignment {trap} { LOCATION = R3;  }
 set_pin_assignment {mem_instr} { LOCATION = N3;  }
 set_pin_assignment {mem_valid} { LOCATION = R8;  }
