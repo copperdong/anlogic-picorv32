@@ -48,7 +48,7 @@ module regfile_dp (
 				.WRITEMODE_A("NORMAL"),
 				.WRITEMODE_B("NORMAL"),
 				.RESETMODE("SYNC"),
-				.IMPLEMENT("9K(FAST)"),
+				.IMPLEMENT("9K"),
 				.INIT_FILE("zero.mif"))
 			inst(
 				.dia(dia),

@@ -9,13 +9,13 @@
     </HardWare>
     <Source_Files>
         <Verilog>
-            <File>picorv32.v</File>
             <File>top.v</File>
             <File>al_ip/mem_hi.v</File>
             <File>al_ip/mem_lo.v</File>
             <File>al_ip/mem_mh.v</File>
             <File>al_ip/mem_ml.v</File>
             <File>al_ip/regfile.v</File>
+            <File>presyn/picorv32_presyn.v</File>
         </Verilog>
         <ADC_FILE>io.adc</ADC_FILE>
         <SDC_FILE>picorv32_demo.sdc</SDC_FILE>
@@ -27,9 +27,9 @@
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Project_Settings>
-        <Current_Step>40</Current_Step>
-        <SRC-Last-Read>2017-02-09 13:33:20</SRC-Last-Read>
-        <SLC-Last-Read>2017-02-09 13:33:23</SLC-Last-Read>
-        <SDC-Last-Read>2017-02-09 13:30:58</SDC-Last-Read>
+        <Current_Step>60</Current_Step>
+        <SRC-Last-Read>2017-02-09 15:30:57</SRC-Last-Read>
+        <SLC-Last-Read>2017-02-09 15:31:00</SLC-Last-Read>
+        <SDC-Last-Read>2017-02-09 15:32:38</SDC-Last-Read>
     </Project_Settings>
 </Project>

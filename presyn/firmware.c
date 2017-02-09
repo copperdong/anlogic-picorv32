@@ -1,38 +1,16 @@
-#define GPIO_A_ODR (*(volatile char*)0x10000000)
 void putc(char c)
 {
-	int i;
-	volatile int j;
-	int ch = (c << 1) + (1 << 9);
-	for(i = 0; i < 10; i++) //
-	{
-		if(ch & (1 << i))
-			GPIO_A_ODR = 0x03;
-		else
-			GPIO_A_ODR = 0x00;
-		for(j = 0; j < 9; j++)
-			__asm__("nop");
-			
-	}
+	*(volatile char*)0x10000000 = c;
 }
 
 void puts(const char *s)
 {
-	volatile int j;
-	while (*s)
-	{
-		putc(*s++);
-		int j;
-		for(j = 0; j < 1000; j++)
-			__asm__("nop");
-	}
+	while (*s) putc(*s++);
 }
-
 
 void *memcpy(void *dest, const void *src, int n)
 {
-	while (n) 
-	{
+	while (n) {
 		n--;
 		((char*)dest)[n] = ((char*)src)[n];
 	}
@@ -41,7 +19,7 @@ void *memcpy(void *dest, const void *src, int n)
 
 void main()
 {
-	/*char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
+	char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
 			"+frrzf+gb+or+jbexvat+whfg+svar.$$++++++++++++++++GRFG+CNFFRQ!$$";
 	for (int i = 0; message[i]; i++)
 		switch (message[i])
@@ -60,13 +38,6 @@ void main()
 		case '+':
 			message[i] = ' ';
 			break;
-		}*/
-	while(1)
-	{
-		putc(0x55);
-		//putc(0xaa);
-		//puts(message);
-		
-	}
+		}
+	puts(message);
 }
-

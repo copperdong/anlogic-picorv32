@@ -1,6 +1,6 @@
 SECTIONS {
 	.memory : {
-		. = 0x0000000; /* due to TD v3.0.987 bug */
+		. = 0x000000;
 		*(.init);
 		*(.text);
 		*(*);
