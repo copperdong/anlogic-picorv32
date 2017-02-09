@@ -20,7 +20,7 @@ module system_tb;
 
 	system uut (
 		.clk        (clk        ),
-		.resetn     (resetn     ),
+		.resetn_i     (resetn     ),
 		.trap       (trap       ),
 		.out_byte   (out_byte   ),
 		.out_byte_en(out_byte_en)

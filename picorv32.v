@@ -37,6 +37,8 @@
   `define assert(assert_expr)
 `endif
 
+`define ANLOGIC_BRAM_REG 1
+`define ANLOGIC_BRAM_DP   1
 /***************************************************************
  * picorv32
  ***************************************************************/
@@ -65,7 +67,7 @@ module picorv32 #(
 	parameter [ 0:0] REGS_INIT_ZERO = 0,
 	parameter [31:0] MASKED_IRQ = 32'h 0000_0000,
 	parameter [31:0] LATCHED_IRQ = 32'h ffff_ffff,
-	parameter [31:0] PROGADDR_RESET = 32'h 0000_0004,/*  due to TD bug */
+	parameter [31:0] PROGADDR_RESET = 32'h 0000_0004,
 	parameter [31:0] PROGADDR_IRQ = 32'h 0000_0010,
 	parameter [31:0] STACKADDR = 32'h ffff_ffff
 ) (
@@ -142,7 +144,10 @@ module picorv32 #(
 
 	reg [63:0] count_cycle, count_instr;
 	reg [31:0] reg_pc, reg_next_pc, reg_op1, reg_op2, reg_out;
-	reg [31:0] cpuregs [0:regfile_size-1];
+	
+	`ifndef ANLOGIC_BRAM_REG
+		reg [31:0] cpuregs [0:regfile_size-1];
+	`endif
 	reg [4:0] reg_sh;
 
 	reg [31:0] next_insn_opcode;
@@ -168,6 +173,7 @@ module picorv32 #(
 	reg [31:0] irq_pending;
 	reg [31:0] timer;
 
+`ifndef ANLOGIC_BRAM_REG
 	integer i;
 	initial begin
 		if (REGS_INIT_ZERO) begin
@@ -210,7 +216,7 @@ module picorv32 #(
 	wire [31:0] dbg_reg_x30 = cpuregs[30];
 	wire [31:0] dbg_reg_x31 = cpuregs[31];
 `endif
-
+`endif
 	// Internal PCPI Cores
 
 	wire        pcpi_mul_wr;
@@ -1244,8 +1250,13 @@ module picorv32 #(
 
 	reg cpuregs_write;
 	reg [31:0] cpuregs_wrdata;
+`ifdef ANLOGIC_BRAM_REG
+	wire [31:0] cpuregs_rs1;
+	wire [31:0] cpuregs_rs2;
+`else
 	reg [31:0] cpuregs_rs1;
 	reg [31:0] cpuregs_rs2;
+`endif
 	reg [regindex_bits-1:0] decoded_rs;
 
 	always @* begin
@@ -1274,7 +1285,7 @@ module picorv32 #(
 			endcase
 		end
 	end
-
+`ifndef ANLOGIC_BRAM_REG
 	always @(posedge clk) begin
 		if (resetn && cpuregs_write)
 			cpuregs[latched_rd] <= cpuregs_wrdata;
@@ -1291,7 +1302,42 @@ module picorv32 #(
 			cpuregs_rs2 = cpuregs_rs1;
 		end
 	end
-
+	
+`else
+	regfile_dp cpuregs_p1(.clka(clk),
+										.clkb(clk),
+										
+										.addra(decoded_rs1),
+										.doa(cpuregs_rs1),
+										.cea(1'b1),
+										.wea(1'b0),
+										.dia(32'b0),
+										
+										.addrb(latched_rd),
+										.dib(cpuregs_wrdata),
+										.ceb(1'b1),
+										.web(cpuregs_write),
+										
+										.rsta(~resetn),
+										.rstb(~resetn));
+										
+	regfile_dp cpuregs_p2(.clka(clk),
+										.clkb(clk),
+										
+										.addra(decoded_rs2),
+										.doa(cpuregs_rs2),
+										.cea(1'b1),
+										.wea(1'b0),
+										.dia(32'b0),
+										
+										.addrb(latched_rd),
+										.dib(cpuregs_wrdata),
+										.ceb(1'b1),
+										.web(cpuregs_write),
+										
+										.rsta(~resetn),
+										.rstb(~resetn));
+`endif
 	assign launch_next_insn = cpu_state == cpu_state_fetch && decoder_trigger && (!ENABLE_IRQ || irq_delay || irq_active || !(irq_pending & ~irq_mask));
 
 	always @(posedge clk) begin

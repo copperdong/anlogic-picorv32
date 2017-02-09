@@ -52,39 +52,40 @@ module system (
 	reg [31:0] m_read_data;
 	reg m_read_en;
 
+	/* system memory, you can also use AXI-wrapper here */
 	sysmem_l mem_l  (.doa(mem_rdata[7:0]),
 			.dia(mem_la_wdata[7:0]), 
 			.addra(mem_la_addr[11:2]),
 			.cea(1'b1), 
 			.clka(clk), 
-			.wea(mem_la_wstrb[0] && mem_la_write), 
+			.wea(mem_la_wstrb[0] && mem_la_write && mem_la_addr[31:12] == 20'b0), 
 			.rsta(~resetn));
 	sysmem_ml mem_ml  (.doa(mem_rdata[15:8]),
 			.dia(mem_la_wdata[15:8]), 
 			.addra(mem_la_addr[11:2]),
 			.cea(1'b1), 
 			.clka(clk), 
-			.wea(mem_la_wstrb[1] && mem_la_write), 
+			.wea(mem_la_wstrb[1] && mem_la_write && mem_la_addr[31:12] == 20'b0), 
 			.rsta(~resetn));
 	sysmem_mh mem_mh  (.doa(mem_rdata[23:16]),
 			.dia(mem_la_wdata[23:16]), 
 			.addra(mem_la_addr[11:2]),
 			.cea(1'b1), 
 			.clka(clk), 
-			.wea(mem_la_wstrb[2] && mem_la_write), 
+			.wea(mem_la_wstrb[2] && mem_la_write && mem_la_addr[31:12] == 20'b0), 
 			.rsta(~resetn));
 	sysmem_hi mem_hi  (.doa(mem_rdata[31:24]),
 			.dia(mem_la_wdata[31:24]), 
 			.addra(mem_la_addr[11:2]),
 			.cea(1'b1), 
 			.clka(clk), 
-			.wea(mem_la_wstrb[3] && mem_la_write), 
+			.wea(mem_la_wstrb[3] && mem_la_write && mem_la_addr[31:12] == 20'b0), 
 			.rsta(~resetn));
 																																 
 		always @(posedge clk) begin
 			mem_ready <= 1;
 			out_byte_en <= 0;
-
+			/* our I/O port */
 			if (mem_la_write && mem_la_addr == 32'h1000_0000) begin
 				out_byte_en <= 1;
 				out_byte <= mem_la_wdata;
