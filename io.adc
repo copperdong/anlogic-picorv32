@@ -1,0 +1,16 @@
+set_pin_assignment {clk} { LOCATION = M15; DRIVESTRENGTH = NA;  }
+set_pin_assignment {out_byte[7]} { LOCATION = R4;  }
+set_pin_assignment {out_byte[6]} { LOCATION = R5;  }
+set_pin_assignment {out_byte[5]} { LOCATION = R6;  }
+set_pin_assignment {out_byte[4]} { LOCATION = R7;  }
+set_pin_assignment {out_byte[3]} { LOCATION = T4;  }
+set_pin_assignment {out_byte[2]} { LOCATION = T5;  }
+set_pin_assignment {out_byte[1]} { LOCATION = T6;  }
+set_pin_assignment {out_byte[0]} { LOCATION = T7;  }
+set_pin_assignment {out_byte_en} { LOCATION = T3;  }
+set_pin_assignment {resetn} { LOCATION = K7; DRIVESTRENGTH = NA;  }
+set_pin_assignment {trap} { LOCATION = R3;  }
+set_pin_assignment {mem_instr} { LOCATION = N3;  }
+set_pin_assignment {mem_valid} { LOCATION = R8;  }
+set_pin_assignment {reset_o} { LOCATION = T8;  }
+set_pin_assignment {mem_la_write} { LOCATION = M6;  }

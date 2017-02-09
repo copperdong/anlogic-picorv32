@@ -1,0 +1,11 @@
+*.timing
+*.tsm
+*.area
+*.bit
+*.db
+*.bid
+tb
+*.vcd
+*.log
+*.vec
+*.mif
