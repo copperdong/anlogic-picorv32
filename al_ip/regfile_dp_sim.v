@@ -1,5 +1,5 @@
 // Verilog netlist created by TD v3.0.987
-// Fri Feb 10 14:47:50 2017
+// Fri Feb 10 16:08:52 2017
 
 module regfile_dp  // /home/rgwan/anlogic/picorv32_demo/al_ip/regfile_dp.v(14)
   (
@@ -252,112 +252,192 @@ module regfile_dp  // /home/rgwan/anlogic/picorv32_demo/al_ip/regfile_dp.v(14)
     .i1(dram_do_i1_009),
     .sel(raddr[4]),
     .o(do[9]));
-  AL_LOGIC_DRAM16X4 dram_r0_c0 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c0 (
     .di(di[3:0]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_003,dram_do_i0_002,dram_do_i0_001,dram_do_i0_000}));
-  AL_LOGIC_DRAM16X4 dram_r0_c1 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c1 (
     .di(di[7:4]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_007,dram_do_i0_006,dram_do_i0_005,dram_do_i0_004}));
-  AL_LOGIC_DRAM16X4 dram_r0_c2 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c2 (
     .di(di[11:8]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_011,dram_do_i0_010,dram_do_i0_009,dram_do_i0_008}));
-  AL_LOGIC_DRAM16X4 dram_r0_c3 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c3 (
     .di(di[15:12]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_015,dram_do_i0_014,dram_do_i0_013,dram_do_i0_012}));
-  AL_LOGIC_DRAM16X4 dram_r0_c4 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c4 (
     .di(di[19:16]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_019,dram_do_i0_018,dram_do_i0_017,dram_do_i0_016}));
-  AL_LOGIC_DRAM16X4 dram_r0_c5 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c5 (
     .di(di[23:20]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_023,dram_do_i0_022,dram_do_i0_021,dram_do_i0_020}));
-  AL_LOGIC_DRAM16X4 dram_r0_c6 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c6 (
     .di(di[27:24]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_027,dram_do_i0_026,dram_do_i0_025,dram_do_i0_024}));
-  AL_LOGIC_DRAM16X4 dram_r0_c7 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r0_c7 (
     .di(di[31:28]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_0),
     .do({dram_do_i0_031,dram_do_i0_030,dram_do_i0_029,dram_do_i0_028}));
-  AL_LOGIC_DRAM16X4 dram_r1_c0 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c0 (
     .di(di[3:0]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_1),
     .do({dram_do_i1_003,dram_do_i1_002,dram_do_i1_001,dram_do_i1_000}));
-  AL_LOGIC_DRAM16X4 dram_r1_c1 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c1 (
     .di(di[7:4]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_1),
     .do({dram_do_i1_007,dram_do_i1_006,dram_do_i1_005,dram_do_i1_004}));
-  AL_LOGIC_DRAM16X4 dram_r1_c2 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c2 (
     .di(di[11:8]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_1),
     .do({dram_do_i1_011,dram_do_i1_010,dram_do_i1_009,dram_do_i1_008}));
-  AL_LOGIC_DRAM16X4 dram_r1_c3 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c3 (
     .di(di[15:12]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_1),
     .do({dram_do_i1_015,dram_do_i1_014,dram_do_i1_013,dram_do_i1_012}));
-  AL_LOGIC_DRAM16X4 dram_r1_c4 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c4 (
     .di(di[19:16]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_1),
     .do({dram_do_i1_019,dram_do_i1_018,dram_do_i1_017,dram_do_i1_016}));
-  AL_LOGIC_DRAM16X4 dram_r1_c5 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c5 (
     .di(di[23:20]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_1),
     .do({dram_do_i1_023,dram_do_i1_022,dram_do_i1_021,dram_do_i1_020}));
-  AL_LOGIC_DRAM16X4 dram_r1_c6 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c6 (
     .di(di[27:24]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),
     .wclk(wclk),
     .we(we_1),
     .do({dram_do_i1_027,dram_do_i1_026,dram_do_i1_025,dram_do_i1_024}));
-  AL_LOGIC_DRAM16X4 dram_r1_c7 (
+  AL_LOGIC_DRAM16X4 #(
+    .INIT_D0(16'b0000000000000000),
+    .INIT_D1(16'b0000000000000000),
+    .INIT_D2(16'b0000000000000000),
+    .INIT_D3(16'b0000000000000000))
+    dram_r1_c7 (
     .di(di[31:28]),
     .raddr(raddr[3:0]),
     .waddr(waddr[3:0]),

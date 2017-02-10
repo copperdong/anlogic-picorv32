@@ -1286,6 +1286,8 @@ module picorv32 #(
 		end
 	end
 `ifndef ANLOGIC_BRAM_REG
+	reg [31:0] cpuregs[0:31];
+	
 	always @(posedge clk) begin
 		if (resetn && cpuregs_write)
 			cpuregs[latched_rd] <= cpuregs_wrdata;
@@ -1304,23 +1306,28 @@ module picorv32 #(
 	end
 	
 `else
+	wire [31:0]cpuregs_rs1_z;
+	wire [31:0]cpuregs_rs2_z;
 	regfile_dp cpuregs_p1(.wclk(clk),
 										.waddr(latched_rd),
-										.we(cpuregs_write),
+										.we(cpuregs_write && resetn),
 										.di(cpuregs_wrdata),
 										
-										.do(cpuregs_rs1),
+										.do(cpuregs_rs1_z),
 										.raddr(decoded_rs1)
 										);
 										
-	regfile_dp cpuregs_p2(.wclk(clk),
+	regfile_dp cpuregs_p2(.wclk(clk), 
 										.waddr(latched_rd),
-										.we(cpuregs_write),
+										.we(cpuregs_write && resetn),
 										.di(cpuregs_wrdata),
 										
-										.do(cpuregs_rs2),
+										.do(cpuregs_rs2_z),
 										.raddr(decoded_rs2)
 										);
+	assign cpuregs_rs1 = decoded_rs1? cpuregs_rs1_z: 0;
+	assign cpuregs_rs2 = decoded_rs2? cpuregs_rs2_z: 0;
+
 `endif
 	assign launch_next_insn = cpu_state == cpu_state_fetch && decoder_trigger && (!ENABLE_IRQ || irq_delay || irq_active || !(irq_pending & ~irq_mask));
 

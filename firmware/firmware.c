@@ -1,4 +1,8 @@
 #define GPIO_A_ODR (*(volatile char*)0x10000000)
+/*void putc(char c)
+{
+	GPIO_A_ODR = c;
+}*/
 void putc(char c)
 {
 	int i;
@@ -7,7 +11,7 @@ void putc(char c)
 	for(i = 0; i < 10; i++) //
 	{
 		if(ch & (1 << i))
-			GPIO_A_ODR = 0x03;
+			GPIO_A_ODR = 0xff;
 		else
 			GPIO_A_ODR = 0x00;
 		for(j = 0; j < 9; j++)
@@ -15,19 +19,14 @@ void putc(char c)
 			
 	}
 }
-
 void puts(const char *s)
 {
 	volatile int j;
 	while (*s)
 	{
 		putc(*s++);
-		int j;
-		for(j = 0; j < 1000; j++)
-			__asm__("nop");
 	}
 }
-
 
 void *memcpy(void *dest, const void *src, int n)
 {
@@ -39,9 +38,12 @@ void *memcpy(void *dest, const void *src, int n)
 	return dest;
 }
 
+
+
+
 void main()
 {
-	/*char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
+	char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
 			"+frrzf+gb+or+jbexvat+whfg+svar.$$++++++++++++++++GRFG+CNFFRQ!$$";
 	for (int i = 0; message[i]; i++)
 		switch (message[i])
@@ -60,12 +62,14 @@ void main()
 		case '+':
 			message[i] = ' ';
 			break;
-		}*/
-	while(1)
+		}
+	//puts("Hello world!\n");
+	//int i;
+	/*for(i = 0; i < 8; i++)
 	{
-		putc(0x55);
-		//putc(0xaa);
-		//puts(message);
-		
-	}
+		serial_sim(1 << i);
+		puts("\n");
+	}*/
+	while(1)
+		puts(message);
 }

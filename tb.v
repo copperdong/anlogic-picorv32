@@ -36,3 +36,50 @@ module system_tb;
 		end
 	end
 endmodule
+
+module regfile_dp(di, waddr, we, wclk, do, raddr);
+	input [31:0] di;
+	input [4:0] waddr;
+	input [4:0] raddr;
+	input we;
+	input wclk;
+	output reg [31:0] do;
+	
+	reg [31:0]memory[0:31];
+	integer i;
+	initial begin
+	for(i = 0; i < 32; i++)
+		memory[i] = 32'h0;
+	end
+	always @(posedge wclk)
+		if(we)
+			memory[waddr] <= di;
+	
+	always @*
+		do = memory[raddr];
+endmodule
+/*
+module cpuregs_m(wclk, cpuregs_rs1, cpuregs_rs2, decoded_rs1, decoded_rs2, cpuregs_write, latched_rd, cpuregs_wrdata);
+	input [31:0]cpuregs_wrdata;
+	input [4:0]latched_rd;
+	input [4:0]decoded_rs1;
+	input [4:0]decoded_rs2;
+	
+	output reg [31:0]cpuregs_rs1;
+	output reg [31:0]cpuregs_rs2;
+	
+	reg [31:0] cpuregs[0:31];
+	input cpuregs_write;
+	input wclk;
+	
+	always @(posedge wclk) begin
+		if (cpuregs_write)
+			cpuregs[latched_rd] <= cpuregs_wrdata;
+	end
+
+	always @* begin
+			cpuregs_rs1 = cpuregs[decoded_rs1];
+			cpuregs_rs2 = cpuregs[decoded_rs2];
+	end
+endmodule
+*/

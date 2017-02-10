@@ -14,4 +14,7 @@
         <depth_b>32</depth_b>
         <width_b>32</width_b>
     </ReadMemorySize>
+    <MemoryInitialization>
+        <init_file>zero.mif</init_file>
+    </MemoryInitialization>
 </DRAMConfig>
