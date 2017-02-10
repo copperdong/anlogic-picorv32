@@ -8,7 +8,6 @@ tb
 *.vcd
 *.log
 *.vec
-*.mif
 *~
 *.bin
 *.map
