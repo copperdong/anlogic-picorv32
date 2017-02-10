@@ -15,7 +15,7 @@
             <File>al_ip/mem_lo.v</File>
             <File>al_ip/mem_mh.v</File>
             <File>al_ip/mem_ml.v</File>
-            <File>al_ip/regfile.v</File>
+            <File>al_ip/regfile_dp.v</File>
         </Verilog>
         <ADC_FILE>io.adc</ADC_FILE>
         <SDC_FILE>picorv32_demo.sdc</SDC_FILE>
@@ -27,9 +27,9 @@
         <CREATEINDEX>user</CREATEINDEX>
     </TOP_MODULE>
     <Project_Settings>
-        <Current_Step>40</Current_Step>
-        <SRC-Last-Read>2017-02-09 13:33:20</SRC-Last-Read>
-        <SLC-Last-Read>2017-02-09 13:33:23</SLC-Last-Read>
-        <SDC-Last-Read>2017-02-09 13:30:58</SDC-Last-Read>
+        <Current_Step>0</Current_Step>
+        <SRC-Last-Read>2017-02-09 23:49:48</SRC-Last-Read>
+        <SLC-Last-Read>2017-02-09 23:49:50</SLC-Last-Read>
+        <SDC-Last-Read>2017-02-09 23:50:45</SDC-Last-Read>
     </Project_Settings>
 </Project>

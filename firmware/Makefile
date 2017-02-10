@@ -9,6 +9,7 @@ lo.mif: firmware.S firmware.c firmware.lds
 	./rom2mif
 	$(TOOLCHAIN_PREFIX)objdump -d firmware.elf > disasm.S
 	cp *.mif ../al_ip
+	cp zero ../al_ip/zero.mif
 clean:
 	rm firmware.elf
 	rm *.mif

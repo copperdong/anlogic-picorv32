@@ -41,7 +41,7 @@ void *memcpy(void *dest, const void *src, int n)
 
 void main()
 {
-	char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
+	/*char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
 			"+frrzf+gb+or+jbexvat+whfg+svar.$$++++++++++++++++GRFG+CNFFRQ!$$";
 	for (int i = 0; message[i]; i++)
 		switch (message[i])
@@ -60,12 +60,12 @@ void main()
 		case '+':
 			message[i] = ' ';
 			break;
-		}
+		}*/
 	while(1)
 	{
-		/*putc(0x55);
-		putc(0xaa);*/
-		puts(message);
+		putc(0x55);
+		//putc(0xaa);
+		//puts(message);
 		
 	}
 }

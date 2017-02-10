@@ -1304,39 +1304,23 @@ module picorv32 #(
 	end
 	
 `else
-	regfile_dp cpuregs_p1(.clka(clk),
-										.clkb(clk),
+	regfile_dp cpuregs_p1(.wclk(clk),
+										.waddr(latched_rd),
+										.we(cpuregs_write),
+										.di(cpuregs_wrdata),
 										
-										.addra(decoded_rs1),
-										.doa(cpuregs_rs1),
-										.cea(1'b1),
-										.wea(1'b0),
-										.dia(32'b0),
+										.do(cpuregs_rs1),
+										.raddr(decoded_rs1)
+										);
 										
-										.addrb(latched_rd),
-										.dib(cpuregs_wrdata),
-										.ceb(1'b1),
-										.web(cpuregs_write),
+	regfile_dp cpuregs_p2(.wclk(clk),
+										.waddr(latched_rd),
+										.we(cpuregs_write),
+										.di(cpuregs_wrdata),
 										
-										.rsta(~resetn),
-										.rstb(~resetn));
-										
-	regfile_dp cpuregs_p2(.clka(clk),
-										.clkb(clk),
-										
-										.addra(decoded_rs2),
-										.doa(cpuregs_rs2),
-										.cea(1'b1),
-										.wea(1'b0),
-										.dia(32'b0),
-										
-										.addrb(latched_rd),
-										.dib(cpuregs_wrdata),
-										.ceb(1'b1),
-										.web(cpuregs_write),
-										
-										.rsta(~resetn),
-										.rstb(~resetn));
+										.do(cpuregs_rs2),
+										.raddr(decoded_rs2)
+										);
 `endif
 	assign launch_next_insn = cpu_state == cpu_state_fetch && decoder_trigger && (!ENABLE_IRQ || irq_delay || irq_active || !(irq_pending & ~irq_mask));
 
