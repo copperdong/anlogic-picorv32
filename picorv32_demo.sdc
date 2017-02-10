@@ -3,5 +3,5 @@
 # ## Date	:	09 02 2017
 
 #Created Clock
-create_clock -name clk -period 20 [get_ports clk]
+create_clock -name clk -period 10 [get_ports clk]
 
