@@ -320,7 +320,7 @@ module picorv32 #(
 	reg mem_do_prefetch;
 	reg mem_do_rinst;
 	reg mem_do_rdata;
-	reg mem_do_wdata;
+	reg mem_do_wdata = 0;
 
 	reg mem_la_secondword, mem_la_firstword_reg, last_mem_valid;
 	wire mem_la_firstword = COMPRESSED_ISA && (mem_do_prefetch || mem_do_rinst) && next_pc[1] && !mem_la_secondword;
