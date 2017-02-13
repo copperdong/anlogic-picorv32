@@ -172,7 +172,7 @@ module simple_uart(clk_i,
 				uart_status_rx <= 0;
 				uart_status_fe <= 0;
 			end
-			if(uart_op_clock) //六倍采样
+			if(uart_op_clock) //三倍采样
 			begin
 				case(uart_status_rxd)
 				4'd0:/* 测量起始位 */
@@ -195,7 +195,7 @@ module simple_uart(clk_i,
 					if(uart_cnt_rx == 3'b100)
 					begin
 						uart_cnt_rx <= 3'b001;
-						if(uart_smp_rx >= 2)
+						if(uart_smp_rx >= 2) //三选2
 						begin
 							uart_status_rxd <= 2;
 							uart_smp_rx <= !rxd_i;

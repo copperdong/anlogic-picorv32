@@ -13,7 +13,8 @@ lo.mif: firmware.S firmware.c firmware.lds rom2mif.exe
 	python3 makehex.py firmware.bin 1024 > firmware.hex
 clean:
 	rm  -f firmware.elf
-	rm *.mif
+	rm -f *.mif
+	
 
 rom2mif.exe:rom2mif.c
 	gcc rom2mif.c -o rom2mif.exe
