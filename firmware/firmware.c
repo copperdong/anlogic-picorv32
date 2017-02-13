@@ -50,9 +50,9 @@ void *memcpy(void *dest, const void *src, int n)
 void main()
 {
 	volatile int i = 0;
-	UART_BSRR = 1;
 	char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
 			"+frrzf+gb+or+jbexvat+whfg+svar.$$++++++++++++++++GRFG+CNFFRQ!$$";
+	UART_BSRR = 69; //baudrate 115200
 	for (int i = 0; message[i]; i++)
 		switch (message[i])
 		{
@@ -78,8 +78,11 @@ void main()
 		serial_sim(1 << i);
 		puts("\n");
 	}*/
-	//while(1)
+	while(1)
 		puts(message);
+
+	//while(1)
+		//puts("Hello world \n");
 
 ;
 }

@@ -36,7 +36,7 @@ module simple_uart(clk_i,
 	
 	wire uart_op_clock_by_3 = uart_op_clock_by_3_c[0] && uart_op_clock;
 	
-	wire [7:0]uart_sr = {7'b0, uart_status_txd!= 0};
+	wire [7:0]uart_sr = {7'b0, (uart_status_txd!= 0 || uart_trigger_tx)};
 	
 	reg uart_trigger_tx;
 		
@@ -103,25 +103,30 @@ module simple_uart(clk_i,
 		end
 		else
 		begin
-			if((uart_status_txd != 0 || uart_trigger_tx) && uart_op_clock_by_3)
+			if(uart_status_txd || uart_trigger_tx)
 			begin
 				case(uart_status_txd)
 					4'd0://装填
-						uart_status_txd <= 1;
-					4'd1://开始位
 					begin
 						txd_o <= 0;
-						uart_status_txd <= 2;
+						uart_status_txd <= 1;
+					end
+					4'd1://开始位
+					begin
+						if(uart_op_clock_by_3)
+							uart_status_txd <= 2;
 					end
 					4'd2, 4'd3, 4'd4, 4'd5, 4'd6, 4'd7, 4'd8,4'd9://数据位
 					begin
 						txd_o <= uart_odr[uart_status_txd - 2];
-						uart_status_txd <= uart_status_txd + 1;
+						if(uart_op_clock_by_3)
+							uart_status_txd <= uart_status_txd + 1;
 					end
 					4'd10: //停止位
 					begin
 						txd_o <= 1;
-						uart_status_txd <= 0;
+						if(uart_op_clock_by_3)
+							uart_status_txd <= 0;
 					end
 				endcase
 			end
