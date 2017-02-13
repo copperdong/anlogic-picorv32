@@ -25,9 +25,9 @@ module simple_uart(clk_i,
 	
 	reg [7:0]uart_odr;
 	reg [7:0]uart_idr;
-	reg [15:0]uart_bsrr; //三倍波特率
+	reg [9:0]uart_bsrr; //三倍波特率
 	
-	reg [15:0]uart_counter;//定时器
+	reg [9:0]uart_counter;//定时器
 	
 	reg [3:0]uart_status_txd;
 	
@@ -83,7 +83,7 @@ module simple_uart(clk_i,
 								uart_trigger_tx <= 1;
 							end
 						2'b10:
-							uart_bsrr <= data_i[15:0];
+							uart_bsrr <= data_i[9:0];
 						2'b11:
 							uart_status_rx_clr <= 1;
 					endcase
@@ -94,7 +94,7 @@ module simple_uart(clk_i,
 						2'b01:
 							data_o <= uart_idr;
 						2'b10:
-							data_o <= {16'b0, uart_bsrr};
+							data_o <= {22'b0, uart_bsrr};
 						2'b11:
 							data_o <= uart_sr;
 					endcase
