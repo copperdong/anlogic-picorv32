@@ -51,12 +51,30 @@ module system (
 
 	reg [31:0] m_read_data;
 	reg m_read_en;
-
+	wire txd;
+	wire rxd;
+	wire uart_sel = (mem_la_addr[31:4] == 28'h1000_001);
+	wire [31:0]uart_do;
+	reg [31:0]memory_do;
+	
+	simple_uart uart(.clk_i(clk), .rst_i(resetn),
+			.txd_o(txd), .rxd_i(rxd),
+			.sel_i(uart_sel), .addr_i(mem_la_addr[3:2]),
+			.data_i(mem_la_wdata), .data_o(uart_do),
+			.we_i(mem_la_write));
+	always @*
+	begin
+		if(uart_sel)
+			mem_rdata = uart_do;
+		else
+			mem_rdata = memory_do;
+	end
+	
 	generate if (FAST_MEMORY) begin
 		always @(posedge clk) begin
 			mem_ready <= 1;
 			out_byte_en <= 0;
-			mem_rdata <= memory[mem_la_addr >> 2];
+			memory_do <= memory[mem_la_addr >> 2];
 			if (mem_la_write && (mem_la_addr >> 2) < MEM_SIZE) begin
 				if (mem_la_wstrb[0]) memory[mem_la_addr >> 2][ 7: 0] <= mem_la_wdata[ 7: 0];
 				if (mem_la_wstrb[1]) memory[mem_la_addr >> 2][15: 8] <= mem_la_wdata[15: 8];

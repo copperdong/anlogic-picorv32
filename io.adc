@@ -14,3 +14,5 @@ set_pin_assignment {mem_instr} { LOCATION = N3;  }
 set_pin_assignment {mem_valid} { LOCATION = R8;  }
 set_pin_assignment {reset_o} { LOCATION = T8;  }
 set_pin_assignment {mem_la_write} { LOCATION = M6;  }
+set_pin_assignment {rxd} { LOCATION = P6; DRIVESTRENGTH = NA;  }
+set_pin_assignment {txd} { LOCATION = J6;  }

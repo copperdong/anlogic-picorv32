@@ -1,9 +1,15 @@
 #define GPIO_A_ODR (*(volatile char*)0x10000000)
-/*void putc(char c)
-{
-	GPIO_A_ODR = c;
-}*/
+
+#define UART_ODR (*(volatile char*)0x10000010)
+#define UART_IDR (*(volatile char*)0x10000014)
+#define UART_BSRR (*(volatile unsigned int*)0x10000018)
+#define UART_SR (*(volatile char*)0x1000001C)
 void putc(char c)
+{
+	UART_ODR = c;
+	while(UART_SR & 0x01);
+}
+/*void putc(char c)
 {
 	int i;
 	volatile int j;
@@ -18,7 +24,7 @@ void putc(char c)
 			__asm__("nop");
 			
 	}
-}
+}*/
 void puts(const char *s)
 {
 	volatile int j;
@@ -43,6 +49,8 @@ void *memcpy(void *dest, const void *src, int n)
 
 void main()
 {
+	volatile int i = 0;
+	UART_BSRR = 1;
 	char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
 			"+frrzf+gb+or+jbexvat+whfg+svar.$$++++++++++++++++GRFG+CNFFRQ!$$";
 	for (int i = 0; message[i]; i++)
@@ -70,6 +78,8 @@ void main()
 		serial_sim(1 << i);
 		puts("\n");
 	}*/
-	while(1)
+	//while(1)
 		puts(message);
+
+;
 }

@@ -16,6 +16,7 @@
             <File>al_ip/mem_mh.v</File>
             <File>al_ip/mem_ml.v</File>
             <File>al_ip/regfile_dp.v</File>
+            <File>uart.v</File>
         </Verilog>
         <ADC_FILE>io.adc</ADC_FILE>
         <SDC_FILE>picorv32_demo.sdc</SDC_FILE>
