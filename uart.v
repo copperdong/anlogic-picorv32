@@ -1,4 +1,4 @@
-module simple_uart(clk_i, 
+module simple_uart(clk_i,
 		rst_i,
 		txd_o,
 		rxd_i,
@@ -22,27 +22,27 @@ module simple_uart(clk_i,
 	input [31:0]data_i;
 	output reg [31:0]data_o;
 	input we_i;
-	
+
 	reg [7:0]uart_odr;
 	reg [7:0]uart_idr;
 	reg [31:0]uart_bsrr; //三倍波特率
-	
+
 	reg [31:0]uart_counter;//定时器
-	
+
 	reg [3:0]uart_status_txd;
-	
+
 	reg uart_op_clock;
 	reg [2:0]uart_op_clock_by_3_c;
-	
+
 	wire uart_op_clock_by_3 = uart_op_clock_by_3_c[0] && uart_op_clock;
-	
+
 	reg uart_status_fe;//帧错误
 	reg uart_status_rx;//已收到
-		
+
 	wire [7:0]uart_sr = {5'b0, uart_status_fe,uart_status_rx,(uart_status_txd!= 0 || uart_trigger_tx)};
-	
+
 	reg uart_trigger_tx;
-		
+
 	always @(posedge clk_i or negedge rst_i)
 	begin /* 总线时序部分 */
 		if(!rst_i)
@@ -67,10 +67,10 @@ module simple_uart(clk_i,
 				uart_op_clock <= 0;
 				uart_counter <= uart_counter + 1;
 			end
-			
+
 			if(uart_op_clock_by_3)
 				uart_trigger_tx <= 0;
-				
+
 			uart_status_rx_clr <= 0;
 			if(sel_i)
 			begin
@@ -101,7 +101,7 @@ module simple_uart(clk_i,
 			end
 		end
 	end
-	
+
 	always @(posedge clk_i or negedge rst_i)
 	begin //发送处理
 		if(!rst_i)
@@ -144,14 +144,14 @@ module simple_uart(clk_i,
 			end
 		end
 	end
-	
+
 	reg [3:0]uart_status_rxd;// ---|___|---|___|---|___|___|---|___|---
 				//  ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^
 				//       S   1   0   1   0   0   1   0   E
 	reg [2:0]uart_cnt_rx; //采样次数
 	reg [3:0]uart_smp_rx; //为0的次数
 	reg uart_test_o;
-	
+
 	reg uart_status_rx_clr = 0;
 	always @(posedge clk_i or negedge rst_i)
 	begin //接收处理
@@ -172,7 +172,7 @@ module simple_uart(clk_i,
 				uart_status_rx <= 0;
 				uart_status_fe <= 0;
 			end
-			if(uart_op_clock) //六倍采样
+			if(uart_op_clock) //三倍采样
 			begin
 				case(uart_status_rxd)
 				4'd0:/* 测量起始位 */
@@ -191,11 +191,11 @@ module simple_uart(clk_i,
 					begin
 						uart_smp_rx <= uart_smp_rx + 1;
 					end
-					
+
 					if(uart_cnt_rx == 3'b100)
 					begin
 						uart_cnt_rx <= 3'b001;
-						if(uart_smp_rx >= 2)
+						if(uart_smp_rx >= 2) //三选2
 						begin
 							uart_status_rxd <= 2;
 							uart_smp_rx <= !rxd_i;
@@ -215,7 +215,7 @@ module simple_uart(clk_i,
 					if(uart_cnt_rx == 3'b100)
 					begin
 						uart_cnt_rx <= 3'b001;
-						if(uart_smp_rx >= 2)		
+						if(uart_smp_rx >= 2)
 						begin
 							uart_idr[uart_status_rxd - 2] <= 0;
 							uart_test_o <= 0;
@@ -237,26 +237,26 @@ module simple_uart(clk_i,
 					begin
 						uart_smp_rx <= uart_smp_rx + 1;
 					end
-					if(uart_cnt_rx == 3'b100)
+					if(uart_cnt_rx == 3'b010)
 					begin
 						uart_cnt_rx <= 3'b001;
 						uart_status_rxd <= 0;
-						
+
 						uart_status_rx <= 1;
 						uart_test_o <= 1;
-						if(uart_smp_rx >= 2)	
-						begin	
+						if(uart_smp_rx >= 2)
+						begin
 							uart_status_fe <= 1;
 						end
 						else
 							uart_status_fe <= 0;
-					end	
-				end			
+					end
+				end
 				default:
-					uart_status_rxd <= 0;	
+					uart_status_rxd <= 0;
 				endcase
 			end
 		end
 	end
-	
+
 endmodule
