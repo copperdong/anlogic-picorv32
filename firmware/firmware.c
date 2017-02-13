@@ -53,7 +53,7 @@ char memcmp(void *s1, void *s2, int n)
 
 void print_version()
 {
-	puts("PicoRV32 (RV32IMC ISA) running on AL3\r\n");
+	puts("\r\nPicoRV32 (RV32IMC ISA) running on AL3\r\n");
 	puts("--- Jan.2017 Serial port demo v1\r\n");
 	puts("--- Anlogic Info Tech.(2011-2017)\r\n\r\n");
 }

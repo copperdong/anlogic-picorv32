@@ -232,7 +232,6 @@ module simple_uart(clk_i,
 				end
 				4'd10: /* 结束位 */
 				begin
-					uart_cnt_rx <= (uart_cnt_rx << 1)? uart_cnt_rx << 1: 1;
 					if(!rxd_i)
 					begin
 						uart_smp_rx <= uart_smp_rx + 1;
@@ -251,6 +250,7 @@ module simple_uart(clk_i,
 						else
 							uart_status_fe <= 0;
 					end	
+					uart_cnt_rx <= (uart_cnt_rx << 1)? uart_cnt_rx << 1: 1;
 				end			
 				default:
 					uart_status_rxd <= 0;	
