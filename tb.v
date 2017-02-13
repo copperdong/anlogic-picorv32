@@ -17,15 +17,21 @@ module system_tb;
 	wire trap;
 	wire [7:0] out_byte;
 	wire out_byte_en;
+	reg rxd = 1;
 
 	system uut (
 		.clk        (clk        ),
 		.resetn_i     (resetn     ),
 		.trap       (trap       ),
 		.out_byte   (out_byte   ),
-		.out_byte_en(out_byte_en)
+		.out_byte_en(out_byte_en),
+		.rxd	(rxd)
 	);
-
+	initial
+	begin
+		#88040 rxd = 0;
+		#2070 rxd = 1;
+	end
 	always @(posedge clk) begin
 		if (resetn && out_byte_en) begin
 			$write("%c", out_byte);

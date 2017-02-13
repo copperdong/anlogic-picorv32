@@ -36,7 +36,10 @@ module simple_uart(clk_i,
 	
 	wire uart_op_clock_by_3 = uart_op_clock_by_3_c[0] && uart_op_clock;
 	
-	wire [7:0]uart_sr = {7'b0, (uart_status_txd!= 0 || uart_trigger_tx)};
+	reg uart_status_fe;//帧错误
+	reg uart_status_rx;//已收到
+		
+	wire [7:0]uart_sr = {5'b0, uart_status_fe,uart_status_rx,(uart_status_txd!= 0 || uart_trigger_tx)};
 	
 	reg uart_trigger_tx;
 		
@@ -44,6 +47,7 @@ module simple_uart(clk_i,
 	begin /* 总线时序部分 */
 		if(!rst_i)
 		begin
+			uart_status_rx_clr <= 0;
 			data_o <= 32'h0;
 			uart_counter <= 0;
 			uart_op_clock_by_3_c <= 1;
@@ -64,8 +68,10 @@ module simple_uart(clk_i,
 				uart_counter <= uart_counter + 1;
 			end
 			
-			uart_trigger_tx <= 0;
+			if(uart_op_clock_by_3)
+				uart_trigger_tx <= 0;
 				
+			uart_status_rx_clr <= 0;
 			if(sel_i)
 			begin
 				if(we_i)
@@ -78,6 +84,8 @@ module simple_uart(clk_i,
 							end
 						2'b10:
 							uart_bsrr <= data_i;
+						2'b11:
+							uart_status_rx_clr <= 1;
 					endcase
 				else
 					case (addr_i)
@@ -95,7 +103,7 @@ module simple_uart(clk_i,
 	end
 	
 	always @(posedge clk_i or negedge rst_i)
-	begin
+	begin //发送处理
 		if(!rst_i)
 		begin
 			txd_o <= 1;
@@ -108,11 +116,13 @@ module simple_uart(clk_i,
 				case(uart_status_txd)
 					4'd0://装填
 					begin
-						txd_o <= 0;
-						uart_status_txd <= 1;
+						//txd_o <= 0;
+						if(uart_op_clock_by_3)
+							uart_status_txd <= 1;
 					end
 					4'd1://开始位
 					begin
+						txd_o <= 0;
 						if(uart_op_clock_by_3)
 							uart_status_txd <= 2;
 					end
@@ -128,6 +138,122 @@ module simple_uart(clk_i,
 						if(uart_op_clock_by_3)
 							uart_status_txd <= 0;
 					end
+					default:
+						uart_status_txd <= 0;
+				endcase
+			end
+		end
+	end
+	
+	reg [3:0]uart_status_rxd;// ---|___|---|___|---|___|___|---|___|---
+				//  ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^ ^^^
+				//       S   1   0   1   0   0   1   0   E
+	reg [2:0]uart_cnt_rx; //采样次数
+	reg [3:0]uart_smp_rx; //为0的次数
+	reg uart_test_o;
+	
+	reg uart_status_rx_clr = 0;
+	always @(posedge clk_i or negedge rst_i)
+	begin //接收处理
+		if(!rst_i)
+		begin
+			uart_status_rxd <= 0;
+			uart_idr <= 0;
+			uart_cnt_rx <= 1;
+			uart_smp_rx <= 0;
+			uart_status_fe <= 0;
+			uart_status_rx <= 0;
+			uart_test_o <= 1;
+		end
+		else
+		begin
+			if(uart_status_rx_clr)
+			begin
+				uart_status_rx <= 0;
+				uart_status_fe <= 0;
+			end
+			if(uart_op_clock) //六倍采样
+			begin
+				case(uart_status_rxd)
+				4'd0:/* 测量起始位 */
+				begin
+					if(!rxd_i)
+					begin
+						uart_idr <= 0;
+						uart_cnt_rx <= 1;
+						uart_smp_rx <= 1;
+						uart_status_rxd <= 1;
+					end
+				end
+				4'd1:
+				begin
+					if(!rxd_i)
+					begin
+						uart_smp_rx <= uart_smp_rx + 1;
+					end
+					
+					if(uart_cnt_rx == 3'b100)
+					begin
+						uart_cnt_rx <= 3'b001;
+						if(uart_smp_rx >= 2)
+						begin
+							uart_status_rxd <= 2;
+							uart_smp_rx <= !rxd_i;
+							uart_test_o <= 0;
+						end
+						else
+							uart_status_rxd <= 0; //滤波
+					end
+					uart_cnt_rx <= (uart_cnt_rx << 1)? uart_cnt_rx << 1: 1;
+				end
+				4'd2,4'd3,4'd4,4'd5,4'd6,4'd7,4'd8,4'd9:/* 0~7位 */
+				begin
+					if(!rxd_i)
+					begin
+						uart_smp_rx <= uart_smp_rx + 1;
+					end
+					if(uart_cnt_rx == 3'b100)
+					begin
+						uart_cnt_rx <= 3'b001;
+						if(uart_smp_rx >= 2)		
+						begin
+							uart_idr[uart_status_rxd - 2] <= 0;
+							uart_test_o <= 0;
+						end
+						else
+						begin
+							uart_idr[uart_status_rxd - 2] <= 1; //滤波
+							uart_test_o <= 1;
+						end
+						uart_smp_rx <= !rxd_i;
+						uart_status_rxd <= uart_status_rxd + 1;
+					end
+					uart_cnt_rx <= (uart_cnt_rx << 1)? uart_cnt_rx << 1: 1;
+				end
+				4'd10: /* 结束位 */
+				begin
+					uart_cnt_rx <= (uart_cnt_rx << 1)? uart_cnt_rx << 1: 1;
+					if(!rxd_i)
+					begin
+						uart_smp_rx <= uart_smp_rx + 1;
+					end
+					if(uart_cnt_rx == 3'b100)
+					begin
+						uart_cnt_rx <= 3'b001;
+						uart_status_rxd <= 0;
+						
+						uart_status_rx <= 1;
+						uart_test_o <= 1;
+						if(uart_smp_rx >= 2)	
+						begin	
+							uart_status_fe <= 1;
+						end
+						else
+							uart_status_fe <= 0;
+					end	
+				end			
+				default:
+					uart_status_rxd <= 0;	
 				endcase
 			end
 		end

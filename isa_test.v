@@ -5,7 +5,8 @@ module system (
 	input            resetn_i,
 	output           trap,
 	output reg [7:0] out_byte,
-	output reg       out_byte_en
+	output reg       out_byte_en,
+	input rxd
 );
 	// set this to 0 for better timing but less performance/MHz
 	parameter FAST_MEMORY = 1;
@@ -52,7 +53,6 @@ module system (
 	reg [31:0] m_read_data;
 	reg m_read_en;
 	wire txd;
-	wire rxd;
 	wire uart_sel = (mem_la_addr[31:4] == 28'h1000_001);
 	wire [31:0]uart_do;
 	reg [31:0]memory_do;

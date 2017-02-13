@@ -9,22 +9,13 @@ void putc(char c)
 	UART_ODR = c;
 	while(UART_SR & 0x01);
 }
-/*void putc(char c)
+
+char getc()
 {
-	int i;
-	volatile int j;
-	int ch = (c << 1) + (1 << 9);
-	for(i = 0; i < 10; i++) //
-	{
-		if(ch & (1 << i))
-			GPIO_A_ODR = 0xff;
-		else
-			GPIO_A_ODR = 0x00;
-		for(j = 0; j < 9; j++)
-			__asm__("nop");
-			
-	}
-}*/
+	while(!(UART_SR & 0x02)); //Wait for recieve
+	UART_SR = 0; //Clear
+	return UART_IDR;
+}
 void puts(const char *s)
 {
 	volatile int j;
@@ -44,45 +35,70 @@ void *memcpy(void *dest, const void *src, int n)
 	return dest;
 }
 
+char memcmp(void *s1, void *s2, int n)
+{
+	int i;
+	for(i = 0; i < n; i++)
+	{
+		if(((char*)s1)[i] != ((char*)s2)[i])
+			return 0; 
+	}
+	return 1;
+}
 
-
+void print_version()
+{
+	puts("PicoRV32 (RV32IMC ISA) running on AL3\r\n");
+	puts("--- Jan.2017 Serial port demo v1\r\n");
+	puts("--- Anlogic Info Tech.(2011-2017)\r\n\r\n");
+}
 
 void main()
 {
-	volatile int i = 0;
-	char message[] = "$Uryyb+Jbeyq!+Vs+lbh+pna+ernq+guvf+zrffntr+gura$gur+CvpbEI32+PCH"
-			"+frrzf+gb+or+jbexvat+whfg+svar.$$++++++++++++++++GRFG+CNFFRQ!$$";
-	UART_BSRR = 69; //baudrate 115200
-	for (int i = 0; message[i]; i++)
-		switch (message[i])
-		{
-		case 'a' ... 'm':
-		case 'A' ... 'M':
-			message[i] += 13;
-			break;
-		case 'n' ... 'z':
-		case 'N' ... 'Z':
-			message[i] -= 13;
-			break;
-		case '$':
-			message[i] = '\n';
-			break;
-		case '+':
-			message[i] = ' ';
-			break;
-		}
-	//puts("Hello world!\n");
-	//int i;
-	/*for(i = 0; i < 8; i++)
-	{
-		serial_sim(1 << i);
-		puts("\n");
-	}*/
+	char input_entry[32];
+	int i = 0; //输入指针
+	char a = 0;
+	UART_BSRR = 69; //24M晶振，波特率115200
+	
+	input_entry[0] = 0; // for safe
+	
+	print_version();
 	while(1)
-		puts(message);
-
-	//while(1)
-		//puts("Hello world \n");
-
+	{
+		puts("console> ");
+		while(a != '\r')
+		{ /* 处理输入 */
+			a = getc();
+			putc(a);
+			if(a == '\r')
+				putc('\n');
+				
+			input_entry[i] = (a == '\r')? 0: a;
+			
+			i++;
+			if(i >= 32)
+			{
+				puts("\r\nYou 've entered too many characters!\r\nconsole> ");
+				i = 0;
+				input_entry[0] = 0;
+			}
+			if(a == '\r')
+			{
+				i = 0;
+			}
+		}
+		
+		a = 0;
+		
+		if(memcmp(input_entry, "help", 4))
+		{
+			print_version();
+			puts("help - display this message\r\n");
+			continue;
+		}
+		puts("error: ");
+		puts(input_entry);
+		puts(" is not a specific command!\r\n");
+	}
 ;
 }
