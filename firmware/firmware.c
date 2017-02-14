@@ -9,6 +9,7 @@
 #define SPI_IDR (*(volatile char*)0x10000014)
 #define SPI_BSRR (*(volatile unsigned int*)0x10000018)
 #define SPI_SR (*(volatile char*)0x1000001C) //CS
+
 void putc(char c)
 {
 	UART_ODR = c;
@@ -66,6 +67,11 @@ void printhex(char i)
 	putc(table[i & 0x0f]);
 }
 
+void printcrlf()
+{
+	putc('\r');
+	putc('\n');
+}
 void dump_memory(int address, int size)
 {
 	int i;
@@ -79,15 +85,13 @@ void dump_memory(int address, int size)
 	puts(" size: 0x");
 	printhex(size >> 8);
 	printhex(size & 0xff);	
-	putc('\r');
-	putc('\n');	
+	printcrlf();	
 	for(i = 0; i < size; i++)
 	{
 		if(i % 16 == 0)
 		{
 			disp_address = address + i;
-			putc('\r');
-			putc('\n');
+			printcrlf();
 			printhex(disp_address >> 24);
 			printhex(disp_address >> 16);
 			printhex(disp_address >> 8);
@@ -102,6 +106,7 @@ void dump_memory(int address, int size)
 void main()
 {
 	char input_entry[32];
+	unsigned int num_cycles, num_instr;
 	int i = 0; //输入指针
 	char a = 0;
 	UART_BSRR = 69; //24M晶振，波特率115200
@@ -142,14 +147,30 @@ void main()
 			puts("help - display this message\r\n");
 			puts("d - dump memory from 0 to 4096\r\n");
 			puts("sd - detect spi flash, dump model\r\n");
+			puts("uptime - display system clock ticks\r\n");
 			puts("exit - executes EBREAK to end the loop\r\n");
 			continue;
 		}
 		if(memcmp(input_entry, "d", 1))
 		{
 			dump_memory(0x00000000, 4096);
-			putc('\r');
-			putc('\n');
+			printcrlf();
+			continue;
+		}
+		if(memcmp(input_entry, "uptime", 6))
+		{
+			__asm__("rdcycle %0; rdinstret %1;" : "=r"(num_cycles), "=r"(num_instr));
+			puts("System cycle counter: 0x");
+			printhex(num_cycles >> 24);
+			printhex(num_cycles >> 16);
+			printhex(num_cycles >> 8);
+			printhex(num_cycles & 0xff);	
+			puts("\r\nSystem instruction counter: 0x");	;
+			printhex(num_instr >> 24);
+			printhex(num_instr >> 16);
+			printhex(num_instr >> 8);
+			printhex(num_instr & 0xff);
+			printcrlf();				
 			continue;
 		}
 		if(memcmp(input_entry, "exit", 4))
