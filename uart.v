@@ -150,6 +150,7 @@ module simple_uart(clk_i,
 				//       S   1   0   1   0   0   1   0   E
 	reg [2:0]uart_cnt_rx; //采样次数
 	reg [3:0]uart_smp_rx; //为0的次数
+	reg [7:0]uart_idr_t;
 	reg uart_test_o;
 	
 	reg uart_status_rx_clr = 0;
@@ -159,6 +160,7 @@ module simple_uart(clk_i,
 		begin
 			uart_status_rxd <= 0;
 			uart_idr <= 0;
+			uart_idr_t <= 0;
 			uart_cnt_rx <= 1;
 			uart_smp_rx <= 0;
 			uart_status_fe <= 0;
@@ -179,8 +181,8 @@ module simple_uart(clk_i,
 				begin
 					if(!rxd_i)
 					begin
-						uart_idr <= 0;
-						uart_cnt_rx <= 1;
+						uart_idr_t <= 0;
+						uart_cnt_rx <= 3'b010;
 						uart_smp_rx <= 1;
 						uart_status_rxd <= 1;
 					end
@@ -217,12 +219,12 @@ module simple_uart(clk_i,
 						uart_cnt_rx <= 3'b001;
 						if(uart_smp_rx >= 2)		
 						begin
-							uart_idr[uart_status_rxd - 2] <= 0;
+							uart_idr_t[uart_status_rxd - 2] <= 0;
 							uart_test_o <= 0;
 						end
 						else
 						begin
-							uart_idr[uart_status_rxd - 2] <= 1; //滤波
+							uart_idr_t[uart_status_rxd - 2] <= 1; //滤波
 							uart_test_o <= 1;
 						end
 						uart_smp_rx <= !rxd_i;
@@ -236,10 +238,12 @@ module simple_uart(clk_i,
 					begin
 						uart_smp_rx <= uart_smp_rx + 1;
 					end
-					if(uart_cnt_rx == 3'b100)
+					if(uart_cnt_rx == 3'b010)
 					begin
 						uart_cnt_rx <= 3'b001;
 						uart_status_rxd <= 0;
+						
+						uart_idr <= uart_idr_t;
 						
 						uart_status_rx <= 1;
 						uart_test_o <= 1;

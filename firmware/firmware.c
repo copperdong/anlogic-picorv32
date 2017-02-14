@@ -105,7 +105,7 @@ void main()
 	int i = 0; //输入指针
 	char a = 0;
 	UART_BSRR = 69; //24M晶振，波特率115200
-	
+
 	input_entry[0] = 0; // for safe
 	
 	print_version();

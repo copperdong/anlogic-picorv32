@@ -31,6 +31,8 @@ module system_tb;
 	begin
 		#88040 rxd = 0;
 		#2070 rxd = 1;
+		#19000 rxd = 0;
+		#2070 rxd = 1;
 	end
 	always @(posedge clk) begin
 		if (resetn && out_byte_en) begin
