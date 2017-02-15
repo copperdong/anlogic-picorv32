@@ -247,7 +247,7 @@ module simple_uart(clk_i,
 						
 						uart_status_rx <= 1;
 						uart_test_o <= 1;
-						if(uart_smp_rx >= 2)	
+						if(uart_smp_rx)	
 						begin	
 							uart_status_fe <= 1;
 						end
