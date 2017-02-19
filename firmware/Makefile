@@ -4,7 +4,7 @@ TOOLCHAIN_PREFIX = riscv32-unknown-elf-
 ARCH = RV32IC
 
 OS_NAME = $(shell uname -o)
-ifeq ($(LC_OS_NAME), Linux)
+ifeq ($(OS_NAME), GNU/Linux)
 OS = "Linux"
 else
 OS = "Windows"
@@ -38,7 +38,7 @@ firmware.hex: firmware.elf
 	rom2hex firmware.bin firmware.hex
 
 detectsys:
-	@echo Your 're using $(OS)
+	@echo "Your 're using $(OS)"
 
 ifeq ($(OS), Linux)
 clean:
