@@ -1,17 +1,52 @@
 
 VLOG = iverilog
-TOOLCHAIN_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
+TOOLCHAIN_PREFIX = riscv32-unknown-elf-
+ARCH = RV32IC
 
-lo.mif: firmware.S firmware.c firmware.lds
+OS_NAME = $(shell uname -o)
+ifeq ($(LC_OS_NAME), Linux)
+OS = "Linux"
+else
+OS = "Windows"
+endif
+
+all: detectsys disasm.S lo.mif firmware.hex
+
+firmware.elf: firmware.S firmware.c firmware.lds
 	$(TOOLCHAIN_PREFIX)gcc -Os -m32 -ffreestanding -nostdlib -o firmware.elf firmware.S firmware.c \
-		-march=RV32IC --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc
+		-march=$(ARCH) --std=gnu99 -Wl,-Bstatic,-T,firmware.lds,-Map,firmware.map,--strip-debug -lgcc
+
+firmware.bin: firmware.elf
 	$(TOOLCHAIN_PREFIX)objcopy -O binary firmware.elf firmware.bin
-	./rom2mif
-	$(TOOLCHAIN_PREFIX)objdump -d firmware.elf > disasm.S
+
+ifeq ($(OS), Linux)
+lo.mif: firmware.bin
+	rom2mif firmware.bin hi.mif mh.mif ml.mif lo.mif
 	cp *.mif ../al_ip
 	cp zero ../al_ip/zero.mif
-	python3 makehex.py firmware.bin 1024 > firmware.hex
-clean:
-	rm  -f firmware.elf
-	rm *.mif
+else
+lo.mif: firmware.bin
+	rom2mif firmware.bin hi.mif mh.mif ml.mif lo.mif
+	copy zero ..\al_ip\zero.mif
+	copy *.mif ..\al_ip
+endif
 
+disasm.S: firmware.elf
+	$(TOOLCHAIN_PREFIX)objdump -d firmware.elf > disasm.S
+
+firmware.hex: firmware.elf
+	rom2hex firmware.bin firmware.hex
+
+detectsys:
+	@echo Your 're using $(OS)
+
+ifeq ($(OS), Linux)
+clean:
+	-rm -f firmware.elf
+	-rm -f *.mif
+else
+clean:
+	-del *.elf
+	-del *.mif
+	-del *.hex
+endif
