@@ -5,6 +5,10 @@ RV32IMC Toolchain for Windows download:
 
 https://pan.baidu.com/s/1kUAfWsZ
 
+NSIS-Packaged version:
+
+http://pan.baidu.com/s/1o7SY4Gi
+
 Required Resources
 --------
 
